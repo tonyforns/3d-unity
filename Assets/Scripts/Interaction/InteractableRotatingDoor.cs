@@ -1,4 +1,5 @@
 using System.Collections;
+using ThreeDUnity.Audio;
 using UnityEngine;
 
 namespace ThreeDUnity.Interaction
@@ -77,6 +78,9 @@ namespace ThreeDUnity.Interaction
                 return;
             }
 
+            bool opening = !isOpen;
+            PlayDoorSound(opening);
+
             Quaternion from = doorTransform.localRotation;
             Quaternion to = isOpen ? closedLocalRotation : openLocalRotation;
 
@@ -88,6 +92,18 @@ namespace ThreeDUnity.Interaction
             }
 
             StartCoroutine(RotateRoutine(from, to));
+        }
+
+        private void PlayDoorSound(bool opening)
+        {
+            if (AudioManager.Instance == null)
+            {
+                return;
+            }
+
+            AudioClipId clipId = opening ? AudioClipId.DoorOpen : AudioClipId.DoorClose;
+            Vector3 position = doorTransform != null ? doorTransform.position : transform.position;
+            AudioManager.Instance.PlayClip(clipId, position);
         }
 
         private IEnumerator RotateRoutine(Quaternion from, Quaternion to)

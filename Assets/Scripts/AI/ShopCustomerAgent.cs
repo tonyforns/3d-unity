@@ -70,6 +70,7 @@ namespace ThreeDUnity.AI
         [SerializeField] private UnityEvent onShoppingTripEnded;
 
         private readonly List<InteractableShopItem> inventory = new List<InteractableShopItem>();
+        private readonly List<InteractableShopItem> depositedPayAreaItems = new List<InteractableShopItem>();
 
         private NavMeshAgent agent;
         private CustomerState currentState = CustomerState.Idle;
@@ -208,6 +209,7 @@ namespace ThreeDUnity.AI
         {
             StopActionRoutine();
             inventory.Clear();
+            depositedPayAreaItems.Clear();
 
             if (waitForShelfWithStock && !TryGetShelfWithStock(out _))
             {
@@ -381,6 +383,7 @@ namespace ThreeDUnity.AI
                     break;
                 }
 
+                depositedPayAreaItems.Add(item);
                 inventory.RemoveAt(i);
                 deliveredAny = true;
             }
@@ -585,6 +588,7 @@ namespace ThreeDUnity.AI
             }
 
             cashRegister.AddPaymentSuccessListener(HandlePaymentSuccess);
+            cashRegister.AddPaymentFailureListener(HandlePaymentFailure);
             isSubscribedToPayment = true;
             currentState = CustomerState.WaitingForPayment;
             SetAgentStopped(true);
@@ -599,6 +603,7 @@ namespace ThreeDUnity.AI
             }
 
             UnsubscribeFromCashRegister();
+            depositedPayAreaItems.Clear();
 
             if (ShouldNavigateToExit())
             {
@@ -608,6 +613,40 @@ namespace ThreeDUnity.AI
             {
                 CompleteShopping();
             }
+        }
+
+        private void HandlePaymentFailure()
+        {
+            if (currentState != CustomerState.WaitingForPayment)
+            {
+                return;
+            }
+
+            UnsubscribeFromCashRegister();
+            DestroyDepositedPayAreaItems();
+
+            if (ShouldNavigateToExit())
+            {
+                BeginLeaving();
+            }
+            else
+            {
+                CompleteShopping();
+            }
+        }
+
+        private void DestroyDepositedPayAreaItems()
+        {
+            for (int i = depositedPayAreaItems.Count - 1; i >= 0; i--)
+            {
+                InteractableShopItem item = depositedPayAreaItems[i];
+                if (item != null)
+                {
+                    Destroy(item.gameObject);
+                }
+            }
+
+            depositedPayAreaItems.Clear();
         }
 
         private bool ShouldNavigateToExit()
@@ -650,6 +689,7 @@ namespace ThreeDUnity.AI
             }
 
             cashRegister.RemovePaymentSuccessListener(HandlePaymentSuccess);
+            cashRegister.RemovePaymentFailureListener(HandlePaymentFailure);
             isSubscribedToPayment = false;
         }
 
@@ -1297,6 +1337,7 @@ namespace ThreeDUnity.AI
             Debug.LogWarning($"{nameof(ShopCustomerAgent)}: {reason}", this);
             StopActionRoutine();
             UnsubscribeFromCashRegister();
+            DestroyDepositedPayAreaItems();
             ReleaseTargetShelf();
             currentState = CustomerState.Finished;
             SetAgentStopped(true);

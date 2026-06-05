@@ -73,6 +73,7 @@ namespace ThreeDUnity.Interaction
             ReleaseFromShelf();
 
             payAreaSlot = slot;
+            gameObject.SetActive(true);
             Transform slotTransform = slot.transform;
             transform.SetParent(slotTransform);
             transform.localPosition = Vector3.zero;
@@ -106,6 +107,8 @@ namespace ThreeDUnity.Interaction
             {
                 itemCollider.enabled = false;
             }
+
+            gameObject.SetActive(false);
         }
 
         private void ReleaseFromShelf()

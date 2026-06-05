@@ -1,4 +1,5 @@
 using ThreeDUnity.AI;
+using ThreeDUnity.Audio;
 using ThreeDUnity.Items;
 using UnityEngine;
 using UnityEngine.Events;
@@ -83,6 +84,7 @@ namespace ThreeDUnity.Interaction
             shopItem.Configure(allowedItem, slot);
             slot.SetOccupant(shopItem);
             OccupiedCount++;
+            PlayPlacementSound(slot.transform.position);
 
             onItemPlaced?.Invoke(shopItem);
 
@@ -164,6 +166,11 @@ namespace ThreeDUnity.Interaction
             slot.ClearOccupant();
             RecountOccupiedSlots();
             return item != null;
+        }
+
+        private static void PlayPlacementSound(Vector3 position)
+        {
+            AudioManager.Instance?.PlayClip(AudioClipId.CardboardHit, position);
         }
 
         private ShopShelfSlot GetFirstFreeSlot()

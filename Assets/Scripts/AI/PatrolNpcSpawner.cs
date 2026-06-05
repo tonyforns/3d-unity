@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ThreeDUnity.Audio;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -192,6 +193,12 @@ namespace ThreeDUnity.AI
 
             patrolAgent.InitializeForSpawn(patrolRoute, waypointIndex);
             patrolAgent.BeginPatrol();
+
+            if (instance.GetComponent<NpcAmbientVocalAudio>() == null)
+            {
+                instance.AddComponent<NpcAmbientVocalAudio>();
+            }
+
             return true;
         }
 

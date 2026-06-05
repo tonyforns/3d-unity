@@ -1,3 +1,4 @@
+using ThreeDUnity.Audio;
 using ThreeDUnity.Economy;
 using ThreeDUnity.UI;
 using UnityEngine;
@@ -50,6 +51,22 @@ namespace ThreeDUnity.Interaction
             }
         }
 
+        public void AddPaymentFailureListener(UnityAction listener)
+        {
+            if (listener != null)
+            {
+                onPaymentFailure.AddListener(listener);
+            }
+        }
+
+        public void RemovePaymentFailureListener(UnityAction listener)
+        {
+            if (listener != null)
+            {
+                onPaymentFailure.RemoveListener(listener);
+            }
+        }
+
         public bool CanInteract(PlayerController interactor)
         {
             if (interactor == null || paymentUI == null)
@@ -90,6 +107,7 @@ namespace ThreeDUnity.Interaction
 
                 if (requireItemsInPayArea && !payArea.HasItems)
                 {
+                    PlayPaymentFailSound();
                     onPaymentFailure?.Invoke();
                     return;
                 }
@@ -103,6 +121,7 @@ namespace ThreeDUnity.Interaction
                         economy.AddMoney(saleTotal);
                     }
 
+                    AudioManager.Instance?.PlayClip(AudioClipId.CoinsGather, transform.position);
                     onPaymentSuccess?.Invoke();
 
                     if (clearPayAreaOnSuccess)
@@ -112,11 +131,17 @@ namespace ThreeDUnity.Interaction
                 }
                 else
                 {
+                    PlayPaymentFailSound();
                     onPaymentFailure?.Invoke();
                 }
             }
 
             onPaymentSubmitted?.Invoke(amount);
+        }
+
+        private void PlayPaymentFailSound()
+        {
+            AudioManager.Instance?.PlayClip(AudioClipId.Fail, transform.position);
         }
 
         private bool HasRequiredPayAreaItems()

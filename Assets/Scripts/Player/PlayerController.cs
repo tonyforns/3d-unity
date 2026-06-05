@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
         moveController = GetComponent<MovePlayerController>();
         if (moveController == null)
         {

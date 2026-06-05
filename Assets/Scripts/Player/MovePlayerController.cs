@@ -37,6 +37,21 @@ public class MovePlayerController : MonoBehaviour
 
     public float MoveSpeedMultiplier => moveSpeedMultiplier;
 
+    public bool IsGrounded => characterController != null && characterController.isGrounded;
+
+    public bool HasMoveInput
+    {
+        get
+        {
+            if (!gameplayInputEnabled || moveAction == null)
+            {
+                return false;
+            }
+
+            return moveAction.ReadValue<Vector2>().sqrMagnitude > 0.0001f;
+        }
+    }
+
     public void SetMoveSpeedMultiplier(float multiplier)
     {
         moveSpeedMultiplier = Mathf.Max(0f, multiplier);

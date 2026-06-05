@@ -1,3 +1,4 @@
+using ThreeDUnity.Audio;
 using ThreeDUnity.Items;
 using UnityEngine;
 using UnityEngine.Events;
@@ -126,6 +127,7 @@ namespace ThreeDUnity.Interaction
             item.AssignToPayArea(slot);
             slot.SetOccupant(item);
             OccupiedCount++;
+            PlayPlacementSound(slot.transform.position);
             onItemAdded?.Invoke(item);
             return true;
         }
@@ -176,6 +178,11 @@ namespace ThreeDUnity.Interaction
                     OccupiedCount++;
                 }
             }
+        }
+
+        private static void PlayPlacementSound(Vector3 position)
+        {
+            AudioManager.Instance?.PlayClip(AudioClipId.CardboardHit, position);
         }
 
         private PayAreaSlot GetFirstFreeSlot()
