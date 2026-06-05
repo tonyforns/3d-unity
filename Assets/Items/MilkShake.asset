@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3b7da657cf99fd4b9ba9bf03ac3a554, type: 3}
+  m_Name: MilkShake
+  m_EditorClassIdentifier: Assembly-CSharp::ThreeDUnity.Items.ItemData
+  prefab: {fileID: 8469267635411489400, guid: 6bcd31ce023c38c49a532bb724627356, type: 3}
+  buyPrice: 5
+  sellPrice: 9
